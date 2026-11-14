@@ -1,0 +1,5 @@
+{
+  "name": "roast",
+  "owner": { "name": "Daniel Mackay" },
+  "plugins": [{ "name": "roast", "source": "./" }]
+}

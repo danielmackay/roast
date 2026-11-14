@@ -1,0 +1,6 @@
+{
+  "name": "roast",
+  "version": "0.1.0",
+  "description": "Answer grilling-skill rounds in a pane: agree or disagree with recommendations, pick options, comment, then send the round back.",
+  "types": "./types/index.d.ts"
+}
