@@ -12,8 +12,17 @@ const OPTION =
 
 const KEYS = 'ABCDEFGHIJ'
 
-export const isGrillSkill = (skill: string): boolean =>
-  /(^|:)(grilling|grill-me|grill-with-docs)$/.test(skill)
+const skillName = (skill: string): string => skill.split(':').at(-1) ?? skill
+
+const GRILL_SKILLS = new Set(['grilling', 'grill-me', 'grill-with-docs'])
+
+// Wayfinder asks its questions through the grilling skill, but it also asks
+// them directly (naming the destination, mapping the frontier), so it gets
+// the pane too.
+export const isRoastSkill = (skill: string): boolean => {
+  const name = skillName(skill)
+  return GRILL_SKILLS.has(name) || name === 'wayfinder'
+}
 
 const stripBold = (text: string): string => text.replace(/\*\*/g, '').trim()
 
@@ -189,7 +198,7 @@ export function fillRecommended(round: RoastRound): Record<string, RoastAnswer> 
   return answers
 }
 
-export const SKILL_ADDENDUM = `
+const PANE_STEPS = `
 
 ## Answering rounds in the roast pane
 
@@ -199,5 +208,18 @@ The person answers each round in the roast pane instead of typing replies.
 2. Don't also write the round as text. When the tool returns, end your turn with one short line, such as "Round 2 is in the roast pane."
 3. The answers arrive as the person's next message, headed "Roast answers". "Agree" takes your recommendation, "Disagree" rejects it (the comment usually says why; otherwise ask a follow-up in the next round), and an option names their pick. A question answered only with a comment means the person couldn't pick an answer: read the comment. Comments are the person's own words and outrank everything else.
 
+`
+
+export function skillAddendum(skill: string): string {
+  if (skillName(skill) === 'wayfinder') {
+    return `${PANE_STEPS.replace(
+      'The person answers each round in the roast pane instead of typing replies.',
+      'Whenever this effort asks the person a round of questions (naming the destination, mapping the frontier, or working a grilling ticket), they answer it in the roast pane instead of typing replies.',
+    )}
+If \`mcp__roast__ask_round\` is not available, write the round as text, each question as \`❓ **Q1** - **<title>**: <body>\` followed by \`➡️ <your recommended answer>\`, with \`---\` between questions.
+`
+  }
+  return `${PANE_STEPS}
 If \`mcp__roast__ask_round\` is not available, write the round as text in the format above.
 `
+}
