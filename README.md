@@ -1,10 +1,10 @@
 # roast
 
-A Claude Code mod for Matt Pocock's grilling skills (`/grill-me`, `/grill-with-docs`). Instead of reading a wall of questions and typing your replies, you answer each round in a pane beside the chat, and roast sends your answers back to Claude for the next round.
+A Claude Code mod for Matt Pocock's grilling skills (`/grill-me`, `/grill-with-docs`) and `/wayfinder`. Instead of reading a wall of questions and typing your replies, you answer each round in a pane beside the chat, and roast sends your answers back to Claude for the next round.
 
 ## What it does
 
-- When a grilling skill loads, roast asks Claude to hand each round to the pane. If Claude writes the round as text instead, roast reads the `❓ **Q1**` / `➡️` format itself.
+- When a grilling skill or wayfinder loads, roast asks Claude to hand each round to the pane. If Claude writes the round as text instead, roast reads the `❓ **Q1**` / `➡️` format itself.
 - For each question you **agree** or **disagree** with Claude's recommendation, or pick one of the listed options. You can add a comment to any answer, and a comment alone is an answer when nothing else fits.
 - **Agree with all recommended** fills every question you haven't touched.
 - **Send** submits the round as your next prompt. It won't send while a question is unanswered.

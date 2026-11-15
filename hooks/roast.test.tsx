@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { formatAnswers, parseRound } from './round'
+import { formatAnswers, isRoastSkill, parseRound, skillAddendum } from './round'
 
 const ROUND = `Some preamble.
 
@@ -42,6 +42,23 @@ test('parses the grilling round format', async () => {
   expect(qs[0]?.recommendedOption).toBe('B')
   expect(qs[1]?.recommendation).toBe('Yes, roast is short and fun.')
   expect(qs[1]?.options.length).toBe(0)
+})
+
+test('matches the grilling skills and wayfinder', async () => {
+  for (const skill of ['grilling', 'grill-me', 'grill-with-docs', 'wayfinder', 'mattpocock:wayfinder']) {
+    expect(isRoastSkill(skill)).toBe(true)
+  }
+  for (const skill of ['grill', 'prototype', 'my-wayfinder']) {
+    expect(isRoastSkill(skill)).toBe(false)
+  }
+})
+
+test('wayfinder addendum spells out the text format', async () => {
+  const text = skillAddendum('mattpocock:wayfinder')
+  expect(text).toContain('naming the destination')
+  expect(text).toContain('❓ **Q1**')
+  expect(text).not.toContain('in the format above')
+  expect(skillAddendum('grilling')).toContain('in the format above')
 })
 
 test('formats answers with comments', async () => {

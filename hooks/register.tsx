@@ -3,15 +3,15 @@ import type { EngineInterface, Register } from 'claude-code'
 
 import type { RoastAnswer, RoastQuestion, RoastRound, RoastView } from '../types'
 import {
-  SKILL_ADDENDUM,
   describe,
   fillRecommended,
   formatAnswers,
   isAnswered,
-  isGrillSkill,
+  isRoastSkill,
   mark,
   parseRound,
   questionsFromTool,
+  skillAddendum,
 } from './round'
 
 const PANE = 'roast'
@@ -123,19 +123,19 @@ export const register: Register = on => {
     await $.tool.register({
       name: 'ask_round',
       description:
-        'Shows one grilling round in the roast pane, where the person answers each question: agree or disagree with your recommendation, pick an option, or comment. Use only while running the grilling skill. Returns at once; the answers arrive as the person\'s next message.',
+        'Shows one grilling round in the roast pane, where the person answers each question: agree or disagree with your recommendation, pick an option, or comment. Use only while running a grilling skill or wayfinder. Returns at once; the answers arrive as the person\'s next message.',
       inputSchema: TOOL_SCHEMA,
       isDeferred: true,
     })
     return next(e)
   })
 
-  // Teach the grilling skill to hand its rounds to the pane.
+  // Teach the grilling skills and wayfinder to hand their rounds to the pane.
   on('skill.prompt', async ($, e, next) => {
     const result = await next(e)
-    if (!isGrillSkill(e.skill)) return result
+    if (!isRoastSkill(e.skill)) return result
     await update($, isActive, () => true)
-    return { text: result.text + SKILL_ADDENDUM }
+    return { text: result.text + skillAddendum(e.skill) }
   })
 
   on('tool.call', { tool: TOOL }, async ($, e) => {
